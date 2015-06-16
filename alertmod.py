@@ -86,10 +86,6 @@ Alltel - cellnumber@message.alltel.com
 """.strip())
 
     def alert(self, message, nick, channel=None, action=False):
-        # Make sure we've been setup first
-        if not self.nv.get('smtp_server') or self.nv.get('alert_email'):
-            return self.do_help()
-
         # If we're not away, ignore
         if not self.GetNetwork().IsIRCAway():
             return znc.CONTINUE
@@ -102,6 +98,10 @@ Alltel - cellnumber@message.alltel.com
 
         if channel and my_nick not in message.s:
             return znc.CONTINUE
+
+        # Make sure we've been setup first
+        if not self.nv.get('smtp_server') or not self.nv.get('alert_email'):
+            return self.do_help()
 
         fromaddr = 'ZNC <%s@%s>' % (os.environ.get('USER'),
                                     os.environ.get('HOSTNAME'))
